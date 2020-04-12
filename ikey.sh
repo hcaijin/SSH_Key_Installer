@@ -6,6 +6,7 @@
 # Blog: https://p3terx.com
 #=================================================
 
+[ $EUID != 0 ] && SUDO=sudo
 KEY_ADD=1
 KEY_CREATE=1
 RESTART=0
@@ -77,16 +78,16 @@ install_key () {
   if [ ${KEY_ADD} -eq 1 ]; then
     echo "Adding SSH key..."
     sed -i "/${PUB_KEY}/d" ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
-    echo "${PUB_KEY}" >> ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
+    echo "${PUB_KEY}" >> ${HOME}/.ssh/authorized_keys
   else
     echo "Overwriting SSH key..."
-    echo "${PUB_KEY}" > ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
+    echo "${PUB_KEY}" > ${HOME}/.ssh/authorized_keys
   fi
   if [ ${KEY_CREATE} -eq 1 ]; then
     create_local_key
   fi
   chmod 700 ${HOME}/.ssh/
-  chmod 600 ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
+  chmod 600 ${HOME}/.ssh/authorized_keys
   [ $? == 0 ] && echo "SSH Key installed successfully!"
 }
 
@@ -95,7 +96,6 @@ disable_password () {
   if [ $(uname -o) == Android ]; then
     sed -i '/PasswordAuthentication /c\PasswordAuthentication no' $PREFIX/etc/ssh/sshd_config
   else
-    [ $EUID != 0 ] && SUDO=sudo
     $SUDO sed -i '/PasswordAuthentication /c\PasswordAuthentication no' /etc/ssh/sshd_config
     [ $? == 0 ] && RESTART=1
   fi
@@ -106,7 +106,6 @@ change_port () {
   if [ $(uname -o) == Android ]; then
     sed -i "/Port /c\Port ${KEY_PORT}" $PREFIX/etc/ssh/sshd_config
   else
-    [ $EUID != 0 ] && SUDO=sudo
     $SUDO sed -i "/Port /c\Port ${KEY_PORT}" /etc/ssh/sshd_config
     [ $? == 0 ] && RESTART=1
   fi
