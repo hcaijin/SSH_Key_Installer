@@ -97,7 +97,22 @@ disable_password () {
     fi
 }
 
-while getopts "og:u:l:d" OPT; do
+change_port () {
+    if [ $(uname -o) == Android ]; then
+        echo "Change listen port in SSH."
+        sed -i "/Port /c\Port ${KEY_PORT}" $PREFIX/etc/ssh/sshd_config
+        [ $? == 0 ] && echo "Restart sshd or Termux App to take effect."
+    else
+        [ $EUID != 0 ] && SUDO=sudo
+        echo "Change listen port in SSH."
+        $SUDO sed -i "/Port /c\Port ${KEY_PORT}" /etc/ssh/sshd_config
+        echo "Restarting sshd..."
+        $SUDO service sshd restart
+        [ $? == 0 ] && echo "Done."
+    fi
+}
+
+while getopts "og:u:l:d:p" OPT; do
     case $OPT in
     o)
         KEY_ADD=0
@@ -119,6 +134,10 @@ while getopts "og:u:l:d" OPT; do
         ;;
     d)
         disable_password
+        ;;
+    p)
+        KEY_PORT=$OPTARG
+        change_port
         ;;
     ?)
         USAGE
