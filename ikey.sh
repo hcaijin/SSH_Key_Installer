@@ -18,6 +18,7 @@ USAGE () {
     echo "  -l	Get the public key from the local file, the arguments is the local file path"
     echo "  -d	Disable password login"
     echo "  -p	Change listen port"
+    echo "  -i	Create local host ssh key"
 }
 
 if [ $# -eq 0 ]; then
@@ -73,6 +74,8 @@ install_key () {
     fi
     if [ ${KEY_ADD} -eq 1 ]; then
         echo "Adding SSH key..."
+        local pub_key_host=$(echo -e "${PUB_KEY}" | awk '{print $NF}')
+        sed -i "/${pub_key_host}/d" ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
         echo -e "\n${PUB_KEY}\n" >> ${HOME}/.ssh/authorized_keys
     else
         echo "Overwriting SSH key..."
@@ -113,7 +116,13 @@ change_port () {
     fi
 }
 
-while getopts "og:u:l:d:p" OPT; do
+create_local_key(){
+  if [ ! -f ~/.ssh/id_ecdsa ]; then
+    ssh-keygen -t ecdsa -b 521 -N '' -f id_ecdsa -q
+  fi
+}
+
+while getopts "og:u:l:d:p:i" OPT; do
     case $OPT in
     o)
         KEY_ADD=0
@@ -139,6 +148,9 @@ while getopts "og:u:l:d:p" OPT; do
     p)
         KEY_PORT=$OPTARG
         change_port
+        ;;
+    i)
+        create_local_key
         ;;
     ?)
         USAGE
