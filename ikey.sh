@@ -17,6 +17,7 @@ USAGE () {
     echo "  -u	Get the public key from the URL, the arguments is the URL"
     echo "  -l	Get the public key from the local file, the arguments is the local file path"
     echo "  -d	Disable password login"
+    echo "  -p	Change listen port"
 }
 
 if [ $# -eq 0 ]; then
