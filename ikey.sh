@@ -77,16 +77,16 @@ install_key () {
   if [ ${KEY_ADD} -eq 1 ]; then
     echo "Adding SSH key..."
     sed -i "/${PUB_KEY}/d" ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
-    echo "${PUB_KEY}" >> ${HOME}/.ssh/authorized_keys
+    echo "${PUB_KEY}" >> ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
   else
     echo "Overwriting SSH key..."
-    echo "${PUB_KEY}" > ${HOME}/.ssh/authorized_keys
+    echo "${PUB_KEY}" > ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
   fi
   if [ ${KEY_CREATE} -eq 1 ]; then
     create_local_key
   fi
   chmod 700 ${HOME}/.ssh/
-  chmod 600 ${HOME}/.ssh/authorized_keys
+  chmod 600 ${HOME}/.ssh/authorized_keys >/dev/null 2>&1
   [ $? == 0 ] && echo "SSH Key installed successfully!"
 }
 
