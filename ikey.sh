@@ -104,12 +104,14 @@ disable_password () {
 }
 
 change_port () {
-  echo "Change listen port in SSH."
-  if [ $(uname -o) == Android ]; then
-    sed -i "/Port /c\Port ${KEY_PORT}" $PREFIX/etc/ssh/sshd_config
-  else
-    $SUDO sed -i "/Port /c\Port ${KEY_PORT}" /etc/ssh/sshd_config
-    [ $? == 0 ] && RESTART=1
+  if [[ ! -z "${KEY_PORT}" && "${KEY_PORT}" != "22" ]]; then
+    echo "Change listen port in SSH."
+    if [ $(uname -o) == Android ]; then
+      sed -i "/Port /c\Port ${KEY_PORT}" $PREFIX/etc/ssh/sshd_config
+    else
+      $SUDO sed -i "/Port /c\Port ${KEY_PORT}" /etc/ssh/sshd_config
+      [ $? == 0 ] && RESTART=1
+    fi
   fi
 }
 
