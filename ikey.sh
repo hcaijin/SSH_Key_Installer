@@ -10,6 +10,7 @@
 KEY_ADD=1
 KEY_CREATE=1
 RESTART=0
+PASSWD=''
 
 USAGE () {
   echo "Usage:"
@@ -22,6 +23,7 @@ USAGE () {
   echo "  -d	Disable password login"
   echo "  -p	Change listen port"
   echo "  -n	Whether to create local host ssh key, default create"
+  echo "  -P	The ssh key password"
 }
 
 if [ $# -eq 0 ]; then
@@ -114,17 +116,20 @@ change_port () {
 create_local_key(){
   if [ ! -f ~/.ssh/id_ecdsa ]; then
     echo "Create ssh key"
-    ssh-keygen -t ecdsa -b 521 -N '' -f ~/.ssh/id_ecdsa -q
+    ssh-keygen -t ecdsa -b 521 -N ${PASSWD} -f ~/.ssh/id_ecdsa -q
   fi
 }
 
-while getopts "onp:g:u:l:d" OPT; do
+while getopts "onP:p:g:u:l:d" OPT; do
   case $OPT in
     o)
       KEY_ADD=0
       ;;
     n)
       KEY_CREATE=0
+      ;;
+    P)
+      PASSWD=$OPTARG
       ;;
     p)
       KEY_PORT=$OPTARG
