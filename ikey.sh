@@ -10,7 +10,6 @@
 KEY_ADD=1
 KEY_CREATE=1
 RESTART=0
-PASSWD=''
 
 USAGE () {
   echo "Usage:"
@@ -118,7 +117,7 @@ change_port () {
 create_local_key(){
   if [ ! -f ~/.ssh/id_ecdsa ]; then
     echo "Create ssh key"
-    ssh-keygen -t ecdsa -b 521 -N ${PASSWD} -f ~/.ssh/id_ecdsa -q
+    ssh-keygen -t ecdsa -b 521 -N "${PASSWD}" -f ~/.ssh/id_ecdsa -q
   fi
 }
 
