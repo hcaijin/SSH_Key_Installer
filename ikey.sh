@@ -118,7 +118,7 @@ change_port () {
 create_local_key(){
   if [ ! -f ~/.ssh/id_ecdsa ]; then
     echo "Create ssh key"
-    ssh-keygen -t ecdsa -b 521 -N ${PASSWD} -f ~/.ssh/id_ecdsa -q
+    ssh-keygen -t ecdsa -b 521 -N \"${PASSWD}\" -f ~/.ssh/id_ecdsa -q
   fi
 }
 
@@ -171,7 +171,5 @@ while getopts "onP:p:g:u:l:d" OPT; do
 done
 
 if [ ${RESTART} -eq 1 ]; then
-  echo "Restarting sshd..."
-  $SUDO service sshd restart
-  [ $? == 0 ] && echo "Done."
+  echo "You can restart sshd."
 fi
